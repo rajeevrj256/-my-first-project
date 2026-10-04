@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Weight Tracker</title>
+  <meta name="description" content="Log your daily weight and see daily and weekly-average graphs. Data stays on your device.">
+  <meta name="theme-color" content="#f9f9f7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0d0d0d" media="(prefers-color-scheme: dark)">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Weight">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <header class="top">
+      <h1>Weight Tracker</h1>
+    </header>
+
+    <div class="hint" id="installHint" hidden>
+      <p>Install on iPhone: tap <strong>Share</strong>, then <strong>Add to Home Screen</strong>.
+        Open it from the Home Screen icon. Entries saved there are kept separate from entries saved in Safari.</p>
+      <button type="button" class="hint-close" id="hintClose" aria-label="Dismiss">&times;</button>
+    </div>
+
+    <section class="card hero" aria-labelledby="latestLabel">
+      <div class="hero-label" id="latestLabel">Latest</div>
+      <div class="hero-value"><span id="latestVal">&ndash;</span> <span class="hero-unit">kg</span></div>
+      <div class="hero-sub" id="latestSub">No entries yet</div>
+    </section>
+
+    <form class="card" id="addForm" novalidate>
+      <h2>Add weight</h2>
+      <label class="field">
+        <span>Weight (kg)</span>
+        <input id="weightIn" type="text" inputmode="decimal" autocomplete="off" placeholder="e.g. 72.4">
+      </label>
+      <label class="field">
+        <span>Date &amp; time</span>
+        <input id="whenIn" type="datetime-local">
+      </label>
+      <button type="submit" class="primary">Save</button>
+      <p class="msg" id="formMsg" role="status" aria-live="polite"></p>
+    </form>
+
+    <section aria-label="Charts">
+      <div class="ranges" role="group" aria-label="Chart range">
+        <button type="button" data-range="30">1M</button>
+        <button type="button" data-range="90">3M</button>
+        <button type="button" data-range="180">6M</button>
+        <button type="button" data-range="365">1Y</button>
+        <button type="button" data-range="0">All</button>
+      </div>
+
+      <div class="card">
+        <h2>Daily weight</h2>
+        <p class="sub">One point per day (days with several entries show their average)</p>
+        <div class="chart" id="dailyChart"></div>
+      </div>
+
+      <div class="card">
+        <h2>Weekly average</h2>
+        <p class="sub">Average of each Monday&ndash;Sunday week</p>
+        <div class="chart" id="weeklyChart"></div>
+        <details class="table-view">
+          <summary>Show as table</summary>
+          <table>
+            <thead><tr><th scope="col">Week of</th><th scope="col">Avg (kg)</th><th scope="col">Days</th></tr></thead>
+            <tbody id="weeklyTable"></tbody>
+          </table>
+        </details>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="historyTitle">
+      <h2 id="historyTitle">History</h2>
+      <ul class="history" id="historyList"></ul>
+      <button type="button" class="secondary" id="moreBtn" hidden>Show more</button>
+    </section>
+
+    <section class="card" aria-labelledby="backupTitle">
+      <h2 id="backupTitle">Backup</h2>
+      <p class="sub" id="storageInfo"></p>
+      <div class="row">
+        <button type="button" class="secondary" id="exportBtn">Export CSV</button>
+        <label class="secondary file-btn">Import CSV
+          <input type="file" id="importIn" accept=".csv,text/csv,text/plain">
+        </label>
+      </div>
+      <p class="msg" id="backupMsg" role="status" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
