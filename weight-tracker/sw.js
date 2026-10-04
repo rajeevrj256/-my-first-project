@@ -1,7 +1,7 @@
 // Caches the app's files so it opens and works offline.
 // Serves from the cache first, then refreshes the cache in the background,
 // so an updated version shows up on the next launch.
-const CACHE = 'weight-tracker-v1';
+const CACHE = 'weight-tracker-v2';
 const ASSETS = [
   './',
   'index.html',

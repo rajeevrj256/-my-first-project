@@ -15,11 +15,27 @@
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icon-180.png">
   <link rel="stylesheet" href="style.css">
+  <script>
+    // Apply a saved light/dark choice before the page paints, so it never flashes the other theme.
+    try {
+      var savedTheme = localStorage.getItem('weightTracker.theme');
+      if (savedTheme === 'light' || savedTheme === 'dark') document.documentElement.dataset.theme = savedTheme;
+    } catch (e) {}
+  </script>
 </head>
 <body>
   <main class="app">
     <header class="top">
       <h1>Weight Tracker</h1>
+      <button type="button" class="theme-btn" id="themeBtn" aria-label="Switch to dark mode">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path class="moon" d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
+          <g class="sun">
+            <circle cx="12" cy="12" r="4.5"/>
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
+          </g>
+        </svg>
+      </button>
     </header>
 
     <div class="hint" id="installHint" hidden>

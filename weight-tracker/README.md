@@ -7,6 +7,8 @@ A small app for logging your weight. It shows two graphs:
 
 You can switch both graphs between 1 month, 3 months, 6 months, 1 year and all time. Tap a graph to see the exact value.
 
+**Dark mode:** the app follows your iPhone's light/dark setting. Tap the moon/sun button at the top right to choose dark or light yourself; the app remembers your choice.
+
 ## Your data stays on your phone
 
 - Entries are saved in the app's local storage on your device. Nothing is uploaded anywhere.

@@ -12,11 +12,13 @@
   --series: #2a78d6;
   --accent: #256abf;
   --danger: #d03b3b;
+  --link: #256abf;
   --shadow: 0 4px 14px rgba(0, 0, 0, 0.10);
 }
 
+/* Dark theme: follows the phone's setting unless Light was picked, or when Dark was picked. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     color-scheme: dark;
     --page: #0d0d0d;
     --surface: #1a1a19;
@@ -29,8 +31,26 @@
     --border: rgba(255, 255, 255, 0.10);
     --series: #3987e5;
     --danger: #e66767;
+    --link: #3987e5;
     --shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
   }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d;
+  --surface: #1a1a19;
+  --field: #121211;
+  --text: #ffffff;
+  --text-2: #c3c2b7;
+  --muted: #898781;
+  --grid: #2c2c2a;
+  --axis: #383835;
+  --border: rgba(255, 255, 255, 0.10);
+  --series: #3987e5;
+  --danger: #e66767;
+  --link: #3987e5;
+  --shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
 }
 
 * { box-sizing: border-box; }
@@ -51,7 +71,24 @@ body {
   padding: 8px max(16px, env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
 }
 
-h1 { font-size: 28px; font-weight: 700; margin: 12px 0 16px; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 12px 0 16px; }
+h1 { font-size: 28px; font-weight: 700; margin: 0; }
+
+.theme-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text);
+}
+.theme-btn:active { opacity: 0.7; }
+.theme-btn[data-mode="light"] .sun,
+.theme-btn[data-mode="dark"] .moon { display: none; }
 h2 { font-size: 17px; font-weight: 600; margin: 0 0 4px; }
 
 .card {
@@ -224,8 +261,7 @@ button, .file-btn { font: inherit; cursor: pointer; }
 
 /* Weekly table */
 .table-view { margin-top: 12px; font-size: 14px; }
-.table-view summary { color: var(--accent); cursor: pointer; padding: 6px 0; }
-@media (prefers-color-scheme: dark) { .table-view summary { color: var(--series); } }
+.table-view summary { color: var(--link); cursor: pointer; padding: 6px 0; }
 .table-view table { width: 100%; border-collapse: collapse; margin-top: 6px; font-variant-numeric: tabular-nums; }
 .table-view th, .table-view td { padding: 6px 4px; border-bottom: 1px solid var(--grid); text-align: right; }
 .table-view th:first-child, .table-view td:first-child { text-align: left; }

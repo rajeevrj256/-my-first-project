@@ -5,6 +5,7 @@
 const STORE_KEY = 'weightTracker.entries.v1';
 const RANGE_KEY = 'weightTracker.range';
 const HINT_KEY = 'weightTracker.hintDismissed';
+const THEME_KEY = 'weightTracker.theme';
 const DAY = 864e5;
 const MIN_KG = 10;
 const MAX_KG = 500;
@@ -531,6 +532,34 @@ async function importCSV(e) {
   say(msg, `Imported ${added} entr${added === 1 ? 'y' : 'ies'}${skipped ? `, skipped ${skipped} unreadable lines` : ''}.`);
 }
 
+/* ---------- theme ---------- */
+
+// The app follows the phone's light/dark setting until the button picks one.
+const systemDark = matchMedia('(prefers-color-scheme: dark)');
+
+function effectiveTheme() {
+  return document.documentElement.dataset.theme || (systemDark.matches ? 'dark' : 'light');
+}
+
+function applyTheme() {
+  const dark = effectiveTheme() === 'dark';
+  const btn = $('themeBtn');
+  btn.dataset.mode = dark ? 'dark' : 'light';
+  btn.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+  if (document.documentElement.dataset.theme) {
+    for (const meta of document.querySelectorAll('meta[name="theme-color"]')) {
+      meta.setAttribute('content', dark ? '#0d0d0d' : '#f9f9f7');
+    }
+  }
+}
+
+function toggleTheme() {
+  const next = effectiveTheme() === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next;
+  writeStore(THEME_KEY, next);
+  applyTheme();
+}
+
 /* ---------- setup ---------- */
 
 function setupInstallHint() {
@@ -546,6 +575,10 @@ function setupInstallHint() {
 
 $('addForm').addEventListener('submit', addEntry);
 $('whenIn').value = toLocalInputValue(new Date());
+
+$('themeBtn').addEventListener('click', toggleTheme);
+if (systemDark.addEventListener) systemDark.addEventListener('change', applyTheme);
+else systemDark.addListener(applyTheme);
 
 document.querySelector('.ranges').addEventListener('click', (e) => {
   const b = e.target.closest('button[data-range]');
@@ -586,6 +619,7 @@ window.addEventListener('resize', () => {
   }
 });
 
+applyTheme();
 setupInstallHint();
 renderAll();
 lastWidth = $('dailyChart').clientWidth;
