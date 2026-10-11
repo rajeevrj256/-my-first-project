@@ -1,7 +1,7 @@
 // Caches the app's files so it opens and works offline.
-// Serves from the cache first, then refreshes the cache in the background,
-// so an updated version shows up on the next launch.
-const CACHE = 'weight-tracker-v4';
+// Always asks the network first, so a newly published version shows up right away;
+// the cached copy is only used when there's no connection.
+const CACHE = 'weight-tracker-v5';
 const ASSETS = [
   './',
   'index.html',
@@ -29,14 +29,19 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   const req = e.request;
   if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
-  const cached = caches.match(req, { ignoreSearch: true });
-  const network = fetch(req).then(async (res) => {
-    if (res.ok) {
-      const cache = await caches.open(CACHE);
-      await cache.put(req, res.clone());
-    }
-    return res;
-  });
-  e.waitUntil(network.catch(() => {}));
-  e.respondWith(cached.then((hit) => hit || network));
+  // One cached copy per file: Siri links (?w=72.4) would otherwise each add another copy of the page.
+  const key = new URL(req.url);
+  key.search = '';
+  e.respondWith(
+    // no-cache revalidates with the server instead of trusting the browser's HTTP cache.
+    fetch(req.url, { cache: 'no-cache' })
+      .then(async (res) => {
+        if (res.ok) {
+          const cache = await caches.open(CACHE);
+          await cache.put(key.href, res.clone());
+        }
+        return res;
+      })
+      .catch(() => caches.match(key.href).then((hit) => hit || Response.error()))
+  );
 });
