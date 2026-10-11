@@ -11,6 +11,19 @@ You can switch both graphs between 1 month, 3 months, 6 months, 1 year and all t
 
 **Dark mode:** the app follows your iPhone's light/dark setting. Tap the moon/sun button at the top right to choose dark or light yourself; the app remembers your choice.
 
+## Log with Siri
+
+Say **"Hey Siri, log weight"**, then say the number (for example "72.4") when Siri asks. Siri opens the app and saves the weight with the current date and time. An **Undo** button appears in case Siri misheard.
+
+Set it up once in the **Shortcuts** app (the same steps and a copy button are at the bottom of the app):
+
+1. Open **Shortcuts**, tap **+** and name the shortcut **Log weight**.
+2. Add **Ask for Input**. Set the type to **Number** and the prompt to "What's your weight?"
+3. Add **URL** with `https://rajeevrj256.github.io/-my-first-project/weight-tracker/?w=`, then insert **Provided Input** right after `w=`.
+4. Add **Open URLs**, then tap **Done**.
+
+> Siri can only open links in **Safari**, and an iPhone keeps a Home Screen web app's data separate from Safari's. So for Siri, use the app in Safari, or add the Home Screen icon with **Open as Web App** turned off. If you already have entries in a Home Screen web app, move them with **Export CSV** there and **Import CSV** in Safari.
+
 ## Your data stays on your phone
 
 - Entries are saved in the app's local storage on your device. Nothing is uploaded anywhere.

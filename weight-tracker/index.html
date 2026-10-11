@@ -38,9 +38,15 @@
       </button>
     </header>
 
+    <div class="note" id="linkNote" hidden>
+      <p id="linkNoteText" role="status" aria-live="polite"></p>
+      <button type="button" class="secondary" id="undoBtn" hidden>Undo</button>
+    </div>
+
     <div class="hint" id="installHint" hidden>
-      <p>Install on iPhone: tap <strong>Share</strong>, then <strong>Add to Home Screen</strong>.
-        Open it from the Home Screen icon. Entries saved there are kept separate from entries saved in Safari.</p>
+      <p>Add an icon: tap <strong>Share</strong>, then <strong>Add to Home Screen</strong>.
+        To log with Siri, turn off <strong>Open as Web App</strong> there, so the icon and Siri share the same entries
+        (see <em>Log with Siri</em> below).</p>
       <button type="button" class="hint-close" id="hintClose" aria-label="Dismiss">&times;</button>
     </div>
 
@@ -132,6 +138,26 @@
         </label>
       </div>
       <p class="msg" id="backupMsg" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="card" aria-labelledby="siriTitle">
+      <h2 id="siriTitle">Log with Siri</h2>
+      <p class="sub">Say &ldquo;Hey Siri, log weight&rdquo;, then say the number when Siri asks. Set it up once in the Shortcuts app:</p>
+      <ol class="steps">
+        <li>Open <strong>Shortcuts</strong>, tap <strong>+</strong> and name the shortcut <strong>Log weight</strong>.</li>
+        <li>Add <strong>Ask for Input</strong>. Set the type to <strong>Number</strong> and the prompt to &ldquo;What's your weight?&rdquo;</li>
+        <li>Add <strong>URL</strong>. Paste the link below, then insert <strong>Provided Input</strong> right after <code>w=</code>.</li>
+        <li>Add <strong>Open URLs</strong>, then tap <strong>Done</strong>.</li>
+      </ol>
+      <div class="copy-row">
+        <input type="text" id="siriLink" readonly aria-label="Link for the Shortcut">
+        <button type="button" class="secondary" id="copyLinkBtn">Copy</button>
+      </div>
+      <p class="sub siri-note">Siri opens this page in <strong>Safari</strong> and saves the weight there. Use the app in Safari,
+        or from a Home Screen icon added with <strong>Open as Web App</strong> turned off. An icon added as a web app keeps
+        separate entries that Siri can't reach.</p>
+      <p class="sub siri-warn" id="siriWarn" hidden>You're using the Home Screen web app now, so Siri's entries won't show up here.
+        To move your entries, tap <strong>Export CSV</strong> here, then <strong>Import CSV</strong> in Safari.</p>
     </section>
   </main>
 

@@ -628,6 +628,74 @@ async function importCSV(e) {
   say(msg, `Imported ${added} entr${added === 1 ? 'y' : 'ies'}${skipped ? `, skipped ${skipped} unreadable lines` : ''}.`);
 }
 
+/* ---------- Siri ---------- */
+
+// A Siri Shortcut opens this page with ?w=72.4; that weight is saved right away with the current time.
+function handleWeightLink() {
+  const raw = new URLSearchParams(location.search).get('w');
+  if (raw === null) return;
+  // Drop the parameter so reloading or reopening the tab can't save the same weight again.
+  history.replaceState(null, '', location.pathname);
+
+  const w = round1(parseFloat(raw.trim().replace(',', '.')));
+  if (!(w >= MIN_KG && w <= MAX_KG)) {
+    showLinkNote(`Siri sent “${raw}”, which doesn't look like a weight in kg. Nothing was saved.`, true);
+    return;
+  }
+  const t = Math.floor(Date.now() / 60e3) * 60e3;
+  if (entries.some(([et, ew]) => ew === w && Math.abs(et - t) < 5 * 60e3)) {
+    showLinkNote(`${fmt.weight(w)} kg was already saved a moment ago.`);
+    return;
+  }
+  const entry = [t, w];
+  entries.push(entry);
+  entries.sort((a, b) => a[0] - b[0]);
+  if (!saveEntries()) {
+    entries.splice(entries.indexOf(entry), 1);
+    showLinkNote('Could not save. Storage may be full or blocked.', true);
+    return;
+  }
+  requestPersistence();
+  showLinkNote(`Saved ${fmt.weight(w)} kg from Siri.`, false, () => {
+    const i = entries.indexOf(entry);
+    if (i < 0) return;
+    entries.splice(i, 1);
+    if (!saveEntries()) {
+      entries.splice(i, 0, entry);
+      showLinkNote('Could not undo. Storage may be blocked.', true);
+      return;
+    }
+    renderAll();
+    showLinkNote(`Removed ${fmt.weight(w)} kg.`);
+  });
+}
+
+function showLinkNote(text, isError = false, onUndo = null) {
+  $('linkNote').hidden = false;
+  $('linkNote').classList.toggle('error', isError);
+  $('linkNoteText').textContent = text;
+  $('undoBtn').hidden = !onUndo;
+  $('undoBtn').onclick = onUndo;
+}
+
+function setupSiriCard() {
+  const link = $('siriLink');
+  link.value = `${location.origin}${location.pathname}?w=`;
+  link.addEventListener('focus', () => link.select());
+  $('copyLinkBtn').addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(link.value);
+      $('copyLinkBtn').textContent = 'Copied';
+      setTimeout(() => { $('copyLinkBtn').textContent = 'Copy'; }, 2000);
+    } catch {
+      link.focus();
+      link.select();
+    }
+  });
+  const installed = navigator.standalone === true || matchMedia('(display-mode: standalone)').matches;
+  $('siriWarn').hidden = !installed;
+}
+
 /* ---------- theme ---------- */
 
 // The app follows the phone's light/dark setting until the button picks one.
@@ -726,6 +794,8 @@ window.addEventListener('resize', () => {
 
 applyTheme();
 setupInstallHint();
+setupSiriCard();
+handleWeightLink();
 renderAll();
 lastWidth = $('dailyChart').clientWidth;
 
