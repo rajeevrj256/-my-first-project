@@ -12,11 +12,13 @@
   --series: #2a78d6;
   --accent: #256abf;
   --danger: #d03b3b;
+  --link: #256abf;
   --shadow: 0 4px 14px rgba(0, 0, 0, 0.10);
 }
 
+/* Dark theme: follows the phone's setting unless Light was picked, or when Dark was picked. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     color-scheme: dark;
     --page: #0d0d0d;
     --surface: #1a1a19;
@@ -29,8 +31,26 @@
     --border: rgba(255, 255, 255, 0.10);
     --series: #3987e5;
     --danger: #e66767;
+    --link: #3987e5;
     --shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
   }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d;
+  --surface: #1a1a19;
+  --field: #121211;
+  --text: #ffffff;
+  --text-2: #c3c2b7;
+  --muted: #898781;
+  --grid: #2c2c2a;
+  --axis: #383835;
+  --border: rgba(255, 255, 255, 0.10);
+  --series: #3987e5;
+  --danger: #e66767;
+  --link: #3987e5;
+  --shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
 }
 
 * { box-sizing: border-box; }
@@ -51,7 +71,24 @@ body {
   padding: 8px max(16px, env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
 }
 
-h1 { font-size: 28px; font-weight: 700; margin: 12px 0 16px; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 12px 0 16px; }
+h1 { font-size: 28px; font-weight: 700; margin: 0; }
+
+.theme-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text);
+}
+.theme-btn:active { opacity: 0.7; }
+.theme-btn[data-mode="light"] .sun,
+.theme-btn[data-mode="dark"] .moon { display: none; }
 h2 { font-size: 17px; font-weight: 600; margin: 0 0 4px; }
 
 .card {
@@ -96,6 +133,17 @@ h2 { font-size: 17px; font-weight: 600; margin: 0 0 4px; }
 .hero-value { font-size: 48px; font-weight: 600; line-height: 1.1; margin: 2px 0 4px; }
 .hero-unit { font-size: 20px; font-weight: 500; color: var(--text-2); }
 .hero-sub { color: var(--text-2); font-size: 14px; }
+.hero-extra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--grid);
+}
+.hero-extra[hidden] { display: none; }
+.extra-value { font-size: 22px; font-weight: 600; }
 
 /* Form */
 .field { display: block; margin: 12px 0; }
@@ -116,7 +164,27 @@ h2 { font-size: 17px; font-weight: 600; margin: 0 0 4px; }
 }
 .field input::-webkit-date-and-time-value { text-align: left; }
 .field input:focus { outline: 2px solid var(--series); outline-offset: 1px; }
-#weightIn { font-size: 24px; font-weight: 600; }
+#weightIn, #waistIn { font-size: 24px; font-weight: 600; }
+.field-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+.field-head label { font-size: 14px; color: var(--text-2); }
+.field-help { margin: 6px 0 0; font-size: 13px; color: var(--text-2); }
+
+.unit-toggle { display: flex; gap: 2px; padding: 2px; background: var(--grid); border-radius: 8px; }
+.unit-toggle button {
+  min-width: 44px;
+  min-height: 32px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-2);
+  font-size: 14px;
+}
+.unit-toggle button[aria-pressed="true"] {
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
 
 button, .file-btn { font: inherit; cursor: pointer; }
 
@@ -224,8 +292,7 @@ button, .file-btn { font: inherit; cursor: pointer; }
 
 /* Weekly table */
 .table-view { margin-top: 12px; font-size: 14px; }
-.table-view summary { color: var(--accent); cursor: pointer; padding: 6px 0; }
-@media (prefers-color-scheme: dark) { .table-view summary { color: var(--series); } }
+.table-view summary { color: var(--link); cursor: pointer; padding: 6px 0; }
 .table-view table { width: 100%; border-collapse: collapse; margin-top: 6px; font-variant-numeric: tabular-nums; }
 .table-view th, .table-view td { padding: 6px 4px; border-bottom: 1px solid var(--grid); text-align: right; }
 .table-view th:first-child, .table-view td:first-child { text-align: left; }

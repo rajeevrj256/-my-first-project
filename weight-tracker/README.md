@@ -7,10 +7,14 @@ A small app for logging your weight. It shows two graphs:
 
 You can switch both graphs between 1 month, 3 months, 6 months, 1 year and all time. Tap a graph to see the exact value.
 
+**Belly size:** you can also log your belly (waist) size, with or without a weight, in cm or inches. Measure around your belly button with a tape, standing relaxed and breathing out, ideally at the same time of day. It gets its own graph, and the Latest card shows the change since your previous measurement.
+
+**Dark mode:** the app follows your iPhone's light/dark setting. Tap the moon/sun button at the top right to choose dark or light yourself; the app remembers your choice.
+
 ## Your data stays on your phone
 
 - Entries are saved in the app's local storage on your device. Nothing is uploaded anywhere.
-- Each entry is about 22 bytes, so 10 years of daily entries is under 100 KB.
+- Each entry is about 22–30 bytes, so 10 years of daily entries is about 100 KB.
 - Under **Backup** you can **Export CSV**, which opens the share sheet so you can save the file to Files or iCloud Drive. **Import CSV** loads a backup back in and skips duplicates.
 
 ## Why it's not an APK
